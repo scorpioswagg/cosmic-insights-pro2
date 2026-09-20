@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS adult_consent boolean NOT NULL DEFAULT false;

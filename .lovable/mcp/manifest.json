@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://ktbyjmekjzuymcbwekba.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "cosmic-blueprint-mcp",
+      "version": "0.1.0",
+      "title": "Cosmic Blueprint"
+    },
+    "tools": [
+      {
+        "name": "list_categories",
+        "title": "List report categories",
+        "description": "List every Cosmic Blueprint report category with the number of reports in each.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_reports",
+        "title": "List Cosmic Blueprint reports",
+        "description": "List all astrology reports available in the Cosmic Blueprint catalog. Optionally filter by category.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "category": {
+              "description": "Optional category filter (e.g. 'Core', 'Relationships', 'Growth', 'Timing', 'Vocation', 'Esoteric', 'Intimacy (18+)', 'Patriotic Collection', 'Signature Series').",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_report_details",
+        "title": "Get report details",
+        "description": "Get the full definition of a Cosmic Blueprint report — sections, tagline, category, target length, and framing.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "report_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The report id, e.g. 'natal-essence' or 'soul-purpose'."
+            }
+          },
+          "required": [
+            "report_id"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "generate_report_pdf",
+        "title": "Generate a Cosmic Blueprint report PDF",
+        "description": "Generate a personalized Cosmic Blueprint report as a luxury PDF for a given natal chart and report type. Uploads the PDF to private storage and returns a short-lived signed download URL. Admin-only.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "report_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Report id from the catalog (see list_reports), e.g. 'natal-essence'."
+            },
+            "chart": {
+              "type": "object",
+              "properties": {
+                "input": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "time": {
+                      "type": "string"
+                    },
+                    "place": {
+                      "type": "string"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "timezone": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "date",
+                    "time",
+                    "place",
+                    "latitude",
+                    "longitude",
+                    "timezone"
+                  ]
+                },
+                "julianDayUT": {
+                  "type": "number"
+                },
+                "utcIso": {
+                  "type": "string"
+                },
+                "ascendant": {
+                  "type": "number"
+                },
+                "midheaven": {
+                  "type": "number"
+                },
+                "bodies": {
+                  "maxItems": 30,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "sign": {
+                        "type": "string"
+                      },
+                      "signDegree": {
+                        "type": "number"
+                      },
+                      "house": {
+                        "type": "number"
+                      },
+                      "retrograde": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "sign",
+                      "signDegree",
+                      "retrograde"
+                    ]
+                  }
+                },
+                "houses": {
+                  "minItems": 12,
+                  "maxItems": 12,
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "aspects": {
+                  "maxItems": 80,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "a": {
+                        "type": "string"
+                      },
+                      "b": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "orb": {
+                        "type": "number"
+                      },
+                      "applying": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "a",
+                      "b",
+                      "type",
+                      "orb",
+                      "applying"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "input",
+                "julianDayUT",
+                "utcIso",
+                "ascendant",
+                "midheaven",
+                "bodies",
+                "houses",
+                "aspects"
+              ],
+              "description": "Full natal chart calculation. Must include Placidus houses, planetary bodies, and aspects — no invented data."
+            },
+            "signed_url_ttl_seconds": {
+              "description": "How long the signed download URL should remain valid. Defaults to 1 hour.",
+              "type": "integer",
+              "minimum": 60,
+              "maximum": 604800
+            }
+          },
+          "required": [
+            "report_id",
+            "chart"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
